@@ -1,0 +1,68 @@
+LOCALLY
+-- create branch
+git branch nameofbranch
+
+-- switch to that branch
+git checkout nameofbranch
+
+-- make changes in a file  file.txt and commit changes for the branch
+git add --all
+git commit -m "what changes here"
+
+
+--so we created new version of a file, took picture and stored in git repository
+
+--switch back to master
+git checkout master
+
+--open file.txt the file again and u will not see the changes :)
+
+-- go back to branch 
+git checkout nameofbranch
+
+--how do i merge my branches?
+
+--1 go to master
+git checkout master
+
+--2 merge branch to master
+git merge nameofbranch
+
+--3 del old branch u dont need it anymore
+git branch -D nameofbranch
+
+
+REMOTELY
+-- create NEW home branch
+git branch nameofhomebranch
+
+-- go to that branch
+git checkout nameofhomebranch
+
+-- make some changes to file2.txt
+-- add them
+git add --all
+
+-- commit
+git commit -m "changes at home"
+
+-- push to branch
+git push origin nameofhomebranch
+
+enter password
+-- new branch nameofhomebranch on remote created 
+
+
+-- lets merge those 2 changes
+git checkout master
+
+-- now merge
+git merge nameofhomebranch
+
+--push
+git push origin master
+
+
+
+
+
