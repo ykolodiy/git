@@ -66,3 +66,17 @@ git push origin master
 
 
 
+
+
+
+
+
+git clone git@github.com:whatever folder-name
+git checkout -b <branch>
+
+make changes
+add commit …
+
+git push -u origin <branch>
+
+
