@@ -1,0 +1,56 @@
+DIFFERENCES
+git diff - to see differences local and repo. but if u add it wont show
+git diff --staged - to see differences btw staging and repo
+
+ADD TO STAGE
+git add foo.txt   - goes to index ( staging area)
+
+UNSTAGE
+git reset HEAD foo.txt - unstage the file
+
+
+ADD TO REPO FROM STAGE
+git commit -m "tetsxx"   - goes to version database
+
+LOG
+git log - history who did where
+git log -S sometext - hostory of comits with that text found
+
+SEE COMMIT
+git show 9cfjhdg5fdf5g5fg5g555sdf5df5df5f5gh - gives changes in this commit
+git show --stat 9cfjhdg5fdf5g5fg5g555sdf5df5df5f5gh - gives changes in this commit shorten
+git show --shortstat 9cfjhdg5fdf5g5fg5g555sdf5df5df5f5gh - gives changes in this commit more shorten
+
+DELETE  
+git rm foo.txt  remove from repo and working
+!!! dont forget to commit it
+
+RENAME
+1 rename file
+2 git add new.txt
+3 git rm old.txt
+4 git commit
+
+or easy way
+git mv  old.txt new.txt
+
+MOVE TO FOLDER
+git mv foo.txt newfolder/foo.txt
+
+
+CHECKOUT FILE   get old version back
+git checkout -- foo.txt     //it takes file from repo foo.txt and makes it your working file IF YOU MESSED up with working file
+git checkout 67c9f17a21c4fdaf8cf510318ad02ed1ba13d4a5 -- foo.txt    GO TO THIS COMMIT AND GET COPY OF FOO.TXT
+
+// commit it to put it on the current time (example as Second) and continue flow: first > secon > third > second
+
+
+
+
+
+
+
+
+
+
+
