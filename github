@@ -1,0 +1,10 @@
+ADD REMOTE
+1 create local repo:  local folder > git add . > git commit -m ""
+2 publish it on git hub: 
+  git remote add origin http://github.com/foo.git   // get conenction, where  origin - nickname of this url, 
+  git push -u origin master    // add it online on branch master
+   
+  ! git remote - to see remote nicknames what is connected
+
+CLONE
+git clone http://github.com/foo.git    // will create foo folder in current folder
