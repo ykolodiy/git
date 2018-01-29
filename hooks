@@ -1,1 +1,160 @@
 https://www.digitalocean.com/community/tutorials/how-to-use-git-hooks-to-automate-development-and-deployment-tasks
+
+
+
+
+
+Using Git Hooks to Deploy to a Separate Production Server
+In this next example, we'll demonstrate a better way to update a production server. We can do this by using the push-to-deploy model in order to update our web server whenever we push to a bare git repository.
+
+We can use the same server we've set up as our development machine. This is where we will do our work. We will be able to see our changes after every single commit.
+
+On our production machine, we will be setting up another web server, a bare git repository that we will push changes to, and a git hook that will execute whenever a push is received. Complete the steps below as a normal user with sudo privileges.
+
+Set Up the Production Server Post-Receive Hook
+On the production server, start off by installing the web server:
+
+sudo apt-get update
+sudo apt-get install apache2
+Again, we should give ownership of the document root to the user we are operating as:
+
+sudo chown -R `whoami`:`id -gn` /var/www/html
+We need to remember to install git on this machine as well:
+
+sudo apt-get install git
+Now, we can create a directory within our user's home directory to hold the repository. We can then move into that directory and initialize a bare repository. A bare repository does not have a working directory and is better for servers that you will not be working with much directly:
+
+mkdir ~/proj
+cd ~/proj
+git init --bare
+Since this is a bare repository, there is no working directory and all of the files that are located in .git in a conventional setup are in the main directory itself.
+
+We need to create another git hook. This time, we are interested in the post-receive hook, which is run on the server receiving a git push. Open this file in your editor:
+
+nano hooks/post-receive
+Again, we need to start off by identifying the type of script we are writing. After that, we can type out the same checkout command that we used in our post-commit file, modified to use the paths on this machine:
+
+#!/bin/bash
+git --work-tree=/var/www/html --git-dir=/home/demo/proj checkout -f
+Since this is a bare repository, the --git-dir should point to the top-level directory of that repo. The rest is fairly similar.
+
+However, we need to add some additional logic to this script. If we accidentally push a test-feature branch to this server, we do not want that to be deployed. We want to make sure that we are only going to be deploying the master branch.
+
+For the post-receive hook, you may have noticed in the table earlier that git passes the old revision's commit hash, the new revision's commit hash, and the reference that is being pushed as standard input to the script. We can use this to check whether the ref is the master branch or not.
+
+First, we need to read the standard input. For each ref being pushed, the three pieces of info (old rev, new rev, ref) will be fed to the script, separated by white space, as standard input. We can read this with a while loop to surround the git command:
+
+#!/bin/bash
+while read oldrev newrev ref
+do
+    git --work-tree=/var/www/html --git-dir=/home/demo/proj checkout -f
+done
+So now, we will have three variables set based on what is being pushed. For a master branch push, the ref object will contain something that looks like refs/heads/master. We can check to see if the ref the server is receiving has this format by using an if construct:
+
+#!/bin/bash
+while read oldrev newrev ref
+do
+    if [[ $ref =~ .*/master$ ]];
+    then
+        git --work-tree=/var/www/html --git-dir=/home/demo/proj checkout -f
+    fi
+done
+For server-side hooks, git can actually pass messages back to the client. Anything sent to standard out will be redirected to the client. This gives us an opportunity to explicitly notify the user about what decision has been made.
+
+We should add some text describing what situation was detected, and what action was taken. We should add an else block to notify the user when a non-master branch was successfully received, even though the action won't trigger a deploy:
+
+#!/bin/bash
+while read oldrev newrev ref
+do
+    if [[ $ref =~ .*/master$ ]];
+    then
+        echo "Master ref received.  Deploying master branch to production..."
+        git --work-tree=/var/www/html --git-dir=/home/demo/proj checkout -f
+    else
+        echo "Ref $ref successfully received.  Doing nothing: only the master branch may be deployed on this server."
+    fi
+done
+When you are finished, save and close the file.
+
+Remember, we must make the script executable for the hook to work:
+
+chmod +x hooks/post-receive
+Now, we can set up access to this remote server on our client.
+
+Configure the Remote Server on your Client Machine
+Back on your client (development) machine, go back into the working directory of your project:
+
+cd ~/proj
+Inside, add the remote server as a remote called production. You will need to know the username that you used on your production server, as well as its IP address or domain name. You will also need to know the location of the bare repository you set up in relation to the user's home directory.
+
+The command you type should look something like this:
+
+git remote add production demo@server_domain_or_IP:proj
+Let's push our current master branch to our production server:
+
+git push production master
+If you do not have SSH keys configured, you may have to enter the password of your production server user. You should see something that looks like this:
+
+Counting objects: 8, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (4/4), 473 bytes | 0 bytes/s, done.
+Total 4 (delta 0), reused 0 (delta 0)
+remote: Master ref received.  Deploying master branch...
+To demo@107.170.14.32:proj
+   009183f..f1b9027  master -> master
+As you can see, the text from our post-receive hook is in the output of the command. If we visit our production server's domain name or IP address in our web browser, we should see the current version of our project:
+
+pushed production
+
+It looks like the hook has successfully pushed our code to production once it received the information.
+
+Now, let's test out some new code. Back on the development machine, we will create a new branch to hold our changes. This way, we can make sure everything is ready to go before we deploy into production.
+
+Make a new branch called test_feature and check the new branch out by typing:
+
+git checkout -b test_feature
+We are now working in the test_feature branch. Let's make a change that we might want to move to production. We will commit it to this branch:
+
+echo "<h2>New Feature Here</h2>" >> index.html
+git add .
+git commit -m "Trying out new feature"
+At this point, if you go to your development machine's IP address or domain name, you should see your changes displayed:
+
+commit changes
+
+This is because our development machine is still being re-deployed at each commit. This work-flow is great for testing out changes prior to moving them to production.
+
+We can push our test_feature branch to our remote production server:
+
+git push production test_feature
+You should see the other message from our post-receive hook in the output:
+
+Counting objects: 5, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 301 bytes | 0 bytes/s, done.
+Total 3 (delta 1), reused 0 (delta 0)
+remote: Ref refs/heads/test_feature successfully received.  Doing nothing: only the master branch may be deployed on this server
+To demo@107.170.14.32:proj
+   83e9dc4..5617b50  test_feature -> test_feature
+If you check out the production server in your browser again, you should see that nothing has changed. This is what we expect, since the change that we pushed was not in the master branch.
+
+Now that we have tested our changes on our development machine, we are sure that we want to incorporate this feature into our master branch. We can checkout our master branch and merge in our test_feature branch on our development machine:
+
+git checkout master
+git merge test_feature
+Now, you have merged the new feature into the master branch. Pushing to the production server will deploy our changes:
+
+git push production master
+If we check out our production server's domain name or IP address, we will see our changes:
+
+Pushed to production
+
+Using this workflow, we can have a development machine that will immediately show any committed changes. The production machine will be updated whenever we push the master branch.
+
+Conclusion
+If you've followed along this far, you should be able to see the different ways that git hooks can help automate some of your tasks. They can help you deploy your code, or help you maintain quality standards by rejecting non-conformant changes or commit messages.
+
+While the utility of git hooks is hard to argue, the actual implementation can be rather difficult to grasp and frustrating to troubleshoot. Practicing implementing various configurations, experimenting with parsing arguments and standard input, and keeping track of how git constructs the hooks' environment will go a long way in teaching you how to write effective hooks. In the long run, the time investment is usually worth it, as it can easily save you and your team loads of manual work over the course of your project's life.
+
