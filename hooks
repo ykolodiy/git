@@ -1,3 +1,44 @@
+3
+localhost
+var/www/html > file.html
+git init
+git remote add origin 72.33.24.32:/opt/git/myproject.git
+git add.
+git commit -m “e”
+git push origin master
+
+
+1
+remote 
+/opt/git
+mkdir myproject.git
+cd myproject.git/
+git init —bare
+cd hooks
+nano post-receive
+#! /bin/sh
+
+GIT_WORK_TREE=/var/www/html/myproject git checkout -f
+
+
+2
+remote apache
+var/www/html
+mkdir myproject
+cd myproject
+git init
+https://www.youtube.com/watch?v=7-qAb4YZF2g
+
+
+
+
+
+
+
+
+or
+
+
 https://www.digitalocean.com/community/tutorials/how-to-use-git-hooks-to-automate-development-and-deployment-tasks
 
 
