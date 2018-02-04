@@ -13,7 +13,7 @@ remote
 /opt/git
 mkdir myproject.git
 cd myproject.git/
-git init —bare
+git --bare init
 cd hooks
 nano post-receive
 #! /bin/sh
