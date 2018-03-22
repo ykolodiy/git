@@ -1,3 +1,14 @@
+0 in ubuntu where jenkins is instal: sudo apt-get git-ftp
+1 jenkins install plugin Credentials Binding Plugin
+1a install github integration plugin
+2 credentials add new user and pass  kind usename with password scope global
+3 new project > build env - use secret text > binding - user pasword separated  set vars FTP_USER FTP_PASS for your ftp acount the same user and pass
+4 build > execute shell : git ftp push (init when first time) --user $FTP_USER --passwd $FTP_PASS ftp://server/folder
+5 back to jenkins > git insert rep url http://github.com /dddd.git
+6 jenkins > conf > github project - project url
+7 build triggers > github hook triger for gitscm
+8 github.com > your rep > setting > webhooks > add webhool > payload url http://your jenkins server/github-webhook/
+
 add 2 plugins Credentials Binding Plugin and GitHub Integration Plugin
 https://www.youtube.com/watch?v=_t-hZTX97AI&index=7&list=PLzvRQMJ9HDiSaisKr7OnM4Fl7JXCDDcmt
 https://www.youtube.com/watch?v=ZdUk3UeG8JQ&list=PLzvRQMJ9HDiSaisKr7OnM4Fl7JXCDDcmt&index=8
