@@ -44,8 +44,8 @@ git checkout 67c9f17a21c4fdaf8cf510318ad02ed1ba13d4a5 -- foo.txt    GO TO THIS C
 
 // commit it to put it on the current time (example as Second) and continue flow: first > secon > third > second
 
-
-
+// go to previous state before changes
+git revert bd2e304468b
 
 
 
