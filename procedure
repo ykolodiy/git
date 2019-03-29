@@ -1,0 +1,38 @@
+SETUP
+//get reposiroty, go to disk C:/SeleniumAutomation
+//clone the repository
+git clone -b env/qa http://YKolodiy@whqsource:7990/scm/tpt/otcatalog_automation.git
+//now Create a new branch 'feature/fix_scenarios'
+//swith to 'feature/fix_scenarios' branch
+
+
+FIX CODE
+
+//git commit your changes
+git commit -am "fixed for file2.javaWheels
+
+// switch to local master 
+git checkout master
+
+//git pull remote origin/master
+git pull -v --no-rebase --progress "origin"
+
+
+//switch back to 'feature/fix_scenarios' branch
+
+//merge master to your 'feature/fix_scenarios' branch
+
+// push your branch to remote to see online 'feature/fix_scenarios' branch
+
+// create online pull request
+
+***************************
+
+git clone -b qa http...
+git checkout qa
+
+changes
+git add
+git commit
+git push to qa
+
