@@ -1,0 +1,41 @@
+git clone -b env/qa http://automation.git
+
+git checkout -b feature/OTC_11679_02
+
+*** so on my local I have branches 'env/qa' and 'feature/OTC_11679_02'
+____
+
+git checkout env/qa
+
+git pull origin env/qa
+
+git checkout feature/OTC_11679_02
+
+git merge env/qa   // no need you r up to date
+
+git push origin feature/OTC_11679_02
+
+
+**** did fix in some file for  OTC_11679_02
+
+
+git add .
+
+
+git commit -m "fix for OTC_11679_02"
+
+
+git push origin feature/OTC_11679_02
+
+
+*** go http://whqsource:7990/projects/TPT/repos/otcatalog_automation/pull-requests?create
+	SOURCE feature/OTC_11679_02
+	DESTINATION env/qa
+  
+  
+  
+  // to reset
+  
+  git checkout env/qa
+  git fetch --all
+  git reset --hard origin/env/qa
