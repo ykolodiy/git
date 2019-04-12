@@ -1,3 +1,13 @@
+// del local branch
+git branch -D feature/OTC_15000_01
+
+//del remote branch
+git push origin --delete feature/OTC_15000_01
+
+
+
+
+
 DIFFERENCES
 git diff - to see differences local and repo. but if u add it wont show
 git diff --staged - to see differences btw staging and repo
