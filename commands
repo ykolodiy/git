@@ -5,7 +5,8 @@ git branch -D feature/OTC_15000_01
 git push origin --delete feature/OTC_15000_01
 
 
-
+SEARCH FOR LINE OF CODE IN ALL COMMITS
+git log -p -S 'get pricingIFrame()' -- test/pages/cases/cases.page.js
 
 
 DIFFERENCES
